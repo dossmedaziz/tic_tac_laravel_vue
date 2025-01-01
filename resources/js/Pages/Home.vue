@@ -95,94 +95,89 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import axios from "axios";
 import {router} from "@inertiajs/vue3";
+import {ref} from 'vue'
 
-export default {
-    name: "Home",
-    data() {
-        return {
-            board: Array(9).fill(null),
-            currentPlayer: "X",
-            players: ["", ""],
-            showModal: false,
-            gameStarted: false,
-            winner: null,
-            isTie: false,
-        };
-    },
-    methods: {
-        showPlayerModal() {
-            this.showModal = true;
-        },
-        startGame() {
-            if (this.players[0] && this.players[1]) {
-                this.showModal = false;
-                this.gameStarted = true;
-            } else {
-                alert("Please enter both player names!");
-            }
-        },
-        makeMove(index) {
-            if (!this.board[index] && !this.winner && this.gameStarted) {
-                this.board[index] = this.currentPlayer;
-                if (this.checkWinner()) {
-                    this.winner = this.currentPlayer === "X" ? this.players[0] : this.players[1];
-                } else if (this.board.every(cell => cell)) {
-                    this.isTie = true;
-                } else {
-                    this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
-                }
-            }
-        },
-        checkWinner() {
-            const winPatterns = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8],
-                [0, 3, 6], [1, 4, 7], [2, 5, 8],
-                [0, 4, 8], [2, 4, 6],
-            ];
-            return winPatterns.some(pattern => {
-                const [a, b, c] = pattern;
-                return this.board[a] && this.board[a] === this.board[b] && this.board[a] === this.board[c];
-            });
-        },
-        restartGame() {
-            this.board = Array(9).fill(null);
-            this.currentPlayer = "X";
-            this.winner = null;
-            this.isTie = false;
-            this.gameStarted = false;
-        },
-        saveScore() {
-            const data = {
-                x_player_name: this.players[0],
-                o_player_name: this.players[1],
-                winner_player_name: this.winner,
-                is_a_tie: this.isTie,
-            };
+const board = ref(Array(9).fill(null));
+const currentPlayer = ref("X")
+const players = ref(["", ""])
+const showModal = ref(false)
+const gameStarted = ref(false)
+const winner = ref(null)
+const isTie = ref(false)
 
-            // get the scores.store route
-            let url = route('scores.store');
-            axios
-                .post(url, data)
-                .then(response => {
-                    // display a modal to show the score has been saved
-                    alert("Score saved successfully!");
-                    document.location.reload();
-                })
-                .catch(error => {
-                    console.error("Error saving score:", error);
-                    alert("Failed to save score.");
-                });
-        },
-        goToLeaderBoard() {
-            // Navigate to the leaderboard
-            let leaderboardUrl = route('leaderboard');
-            router.get(leaderboardUrl);
+
+const showPlayerModal = () => {
+    showModal.value = true;
+}
+const startGame = () => {
+    if (players.value[0] && players.value[1]) {
+        showModal.value = false;
+        gameStarted.value = true;
+    } else {
+        alert("Please enter both player names!");
+    }
+}
+
+const makeMove = (index) => {
+    if (!board.value[index] && !winner.value && gameStarted.value) {
+        board.value[index] = currentPlayer.value;
+        if (checkWinner()) {
+            winner.value = currentPlayer.value === "X" ? players.value[0] : players.value[1];
+        } else if (board.value.every(cell => cell)) {
+            isTie.value = true;
+        } else {
+            currentPlayer.value = currentPlayer.value === "X" ? "O" : "X";
         }
-    },
-};
+    }
+}
+
+const checkWinner = () => {
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6],
+    ];
+    return winPatterns.some(pattern => {
+        const [a, b, c] = pattern;
+        return board.value[a] && board.value[a] === board.value[b] && board.value[a] === board.value[c];
+    });
+}
+const restartGame = () => {
+    board.value = Array(9).fill(null);
+    currentPlayer.value = "X";
+    winner.value = null;
+    isTie.value = false;
+    gameStarted.value = false;
+}
+const saveScore = () => {
+    const data = {
+        x_player_name: players.value[0],
+        o_player_name: players.value[1],
+        winner_player_name: winner.value,
+        is_a_tie: isTie.value,
+    };
+
+    // get the scores.store route
+    let url = route('scores.store');
+    axios
+        .post(url, data)
+        .then(response => {
+            // display a modal to show the score has been saved
+            alert("Score saved successfully!");
+            document.location.reload();
+        })
+        .catch(error => {
+            console.error("Error saving score:", error);
+        });
+}
+const goToLeaderBoard = () => {
+    // Navigate to the leaderboard
+    let leaderboardUrl = route('leaderboard');
+    router.get(leaderboardUrl);
+}
 </script>
 
 <style scoped>
