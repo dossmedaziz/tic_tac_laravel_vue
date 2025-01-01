@@ -8,7 +8,6 @@
         </button>
         <h2 class="text-3xl font-bold text-center mb-6 text-gray-700">Leaderboard</h2>
 
-        <!-- Search Bar -->
         <div class="mb-6 flex justify-center">
             <input
                 v-model="searchQuery"
@@ -25,7 +24,6 @@
             </button>
         </div>
 
-        <!-- Leaderboard Table -->
         <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">
             <thead class="bg-blue-600 text-white">
             <tr>
@@ -37,7 +35,6 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Loop through the filtered scores and display them -->
             <tr
                 v-for="(score, index) in filteredScores"
                 :key="score.id"
@@ -58,7 +55,6 @@
             </tbody>
         </table>
 
-        <!-- Pagination Controls -->
         <div class="mt-4 flex justify-between items-center">
             <button
                 v-if="scores.prev_page_url"
@@ -111,5 +107,4 @@ export default {
 </script>
 
 <style scoped>
-/* Tailwind classes are used for styling */
 </style>
