@@ -1,4 +1,5 @@
 <template>
+    <Head title="Leaderboard" />
     <div class="container mx-auto p-6">
         <button
             @click="gotToNewGame"
@@ -75,35 +76,38 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        scores: Object,
-        searchKey: String,
+<script setup>
+import {ref} from "vue";
+import {Head, router} from "@inertiajs/vue3";
+
+const props = defineProps({
+    scores: {
+        type: Object,
     },
-    data() {
-        return {
-            searchQuery: this.searchKey,
-            filteredScores: this.scores.data,
-        };
+    searchKey: {
+        type: String,
+        default: '',
     },
-    methods: {
-        changePage(page) {
-            let url = `/leaderboard?page=${page}`;
-            url += this.searchQuery ? `&search_key=${this.searchQuery}` : '';
-            this.$inertia.get(url);
-        },
-        searchScores() {
-            const query = this.searchQuery.toLowerCase();
-            let url = route('leaderboard');
-            url += query ? `?search_key=${query}` : '';
-            this.$inertia.get(url);
-        },
-        gotToNewGame() {
-            this.$inertia.visit(route('home'));
-        },
-    },
-};
+
+})
+const searchQuery = ref(props.searchKey);
+const filteredScores = ref(props.scores.data);
+const changePage = (page) => {
+    let url = route('leaderboard', {page: page});
+    url += searchQuery.value ? `&search_key=${searchQuery.value}` : '';
+    router.visit(url);
+}
+
+const searchScores = () => {
+    const query = searchQuery.value.toLowerCase();
+    let url = route('leaderboard');
+    url += query ? `?search_key=${query}` : '';
+    router.visit(url);
+}
+
+const gotToNewGame = () => {
+   router.visit(route('home'));
+}
 </script>
 
 <style scoped>

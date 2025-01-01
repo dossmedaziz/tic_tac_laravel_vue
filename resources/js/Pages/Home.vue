@@ -1,4 +1,5 @@
 <template>
+    <Head title="Game" />
     <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <button
             @click="goToLeaderBoard"
@@ -99,6 +100,7 @@
 import axios from "axios";
 import {router} from "@inertiajs/vue3";
 import {ref} from 'vue'
+import {Head} from "@inertiajs/vue3";
 
 const board = ref(Array(9).fill(null));
 const currentPlayer = ref("X")
