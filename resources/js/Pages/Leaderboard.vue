@@ -33,6 +33,7 @@
                 <th class="px-6 py-3 text-left">O Player</th>
                 <th class="px-6 py-3 text-left">Winner</th>
                 <th class="px-6 py-3 text-left">Tie</th>
+                <th class="px-6 py-3 text-left">Game date</th>
             </tr>
             </thead>
             <tbody>
@@ -52,6 +53,7 @@
               {{ score.is_a_tie ? 'Yes' : 'No' }}
             </span>
                 </td>
+                <td class="px-6 py-4">{{ score.formed_created_at }}</td>
             </tr>
             </tbody>
         </table>
